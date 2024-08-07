@@ -76,6 +76,28 @@ class Lesson(models.Model):
     content = models.TextField()
 
 
+
+
+
+
+# Enrollment model
+# <HINT> Once a user enrolled a class, an enrollment entry should be created between the user and course
+# And we could use the enrollment to track information such as exam submissions
+class Enrollment(models.Model):
+    AUDIT = 'audit'
+    HONOR = 'honor'
+    BETA = 'BETA'
+    COURSE_MODES = [
+        (AUDIT, 'Audit'),
+        (HONOR, 'Honor'),
+        (BETA, 'BETA')
+    ]
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    date_enrolled = models.DateField(default=now)
+    mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
+    rating = models.FloatField(default=5.0)
+
 # Question model
 class Question(models.Model):
     text = models.CharField(max_length=200)
@@ -101,28 +123,6 @@ class Choice(models.Model):
     def __str__(self) -> str:
         return self.text
     
-
-
-
-# Enrollment model
-# <HINT> Once a user enrolled a class, an enrollment entry should be created between the user and course
-# And we could use the enrollment to track information such as exam submissions
-class Enrollment(models.Model):
-    AUDIT = 'audit'
-    HONOR = 'honor'
-    BETA = 'BETA'
-    COURSE_MODES = [
-        (AUDIT, 'Audit'),
-        (HONOR, 'Honor'),
-        (BETA, 'BETA')
-    ]
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    date_enrolled = models.DateField(default=now)
-    mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
-    rating = models.FloatField(default=5.0)
-
-
 # One enrollment could have multiple submission
 # One submission could have multiple choices
 # One choice could belong to multiple submissions
